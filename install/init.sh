@@ -12,6 +12,19 @@ read ip
 echo "Please specify junkins folder"
 read junkins_root
 
+echo "Install python? [y/n] y"
+
+read python_install
+if [[ "$python_install" == "n" || "$python_install" == "N" ]]; then
+  echo ">>> Skipping python installation"
+else
+  echo ">>> Installing python"
+  sudo apt install software-properties-common
+  sudo add-apt-repository ppa:deadsnakes/ppa
+  sudo apt update
+  sudo apt install python3.8
+fi
+
 echo "Installing nginx"
 echo "Install nginx? [y/n] y"
 read nginx_install
