@@ -8,7 +8,7 @@ from config.Config import JunkinsConfig
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv('SECRET', 'SUPER_SECRET_KEY')
 
-configuration = JunkinsConfig(json.load(open('config.json', 'r')))
+configuration = JunkinsConfig(json.load(open(os.getenv('config', 'config.json'), 'r')))
 configuration.registerEndpoints(app)
 
 

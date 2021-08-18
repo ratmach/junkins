@@ -1,0 +1,12 @@
+[Unit]
+Description=junkins gunicorn daemon
+After=network.target
+
+[Service]
+User={user}
+Group={user_group}
+WorkingDirectory={working_directory}
+ExecStart={working_directory}/jenkins_venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:{working_directory}/junkins.sock junkins.wsgi:app
+
+[Install]
+WantedBy=multi-user.target
