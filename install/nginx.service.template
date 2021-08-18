@@ -1,9 +1,9 @@
-server {
+server <<<
     listen 8083;
     server_name {server_names};
 
-    location / {
+    location / <<<
         include proxy_params;
         proxy_pass http://unix:{working_directory}/junkins.sock;
-    }
-}
+    >>>
+>>>

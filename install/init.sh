@@ -1,12 +1,12 @@
 #!/bin/bash
 
-echo "Please specify the port:"
+echo "Please specify the port (i.e 8083):"
 read port
-echo "Please specify the user:"
+echo "Please specify the user (i.e user):"
 read user
-echo "Please specify the user_group:"
+echo "Please specify the user_group (i.e www-data):"
 read user_group
-echo "Please specify the domain/IP (nginx server):"
+echo "Please specify the domain/IP (nginx server, i.e 0.0.0.0):"
 read ip
 
 echo "Please specify junkins folder"
@@ -48,8 +48,8 @@ echo "Installing Dependencies"
 pip install -r requirements.txt
 
 echo "Building configuration files"
-python make_gunicorn_file.py "$user" "$user_group"
-python make_nginx_file.py "$port" "$ip" "$junkins_root"
+python3 make_gunicorn_file.py "$user" "$user_group" "$junkins_junkins_root"
+python3 make_nginx_file.py "$port" "$ip" "$junkins_root"
 
 echo "Copying configuration files"
 sudo cp gunicorn.service /etc/systemd/gunicorn.service
