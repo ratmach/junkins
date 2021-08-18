@@ -1,0 +1,15 @@
+{
+  "port": 8083,
+  "scripts": [
+    {
+      "endpoint": "/pull_frontend/",
+      "auth_type": "BASIC_HTTP",
+      "token": "",
+      "credentials": {
+        "username": "rati",
+        "password": "123"
+      },
+      "script": "pull_frontend.sh"
+    }
+  ]
+}
