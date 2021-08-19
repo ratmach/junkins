@@ -9,7 +9,17 @@
         "username": "rati",
         "password": "123"
       },
-      "script": "./scripts/test_script.sh"
+      "script": "notepad"
+    },
+    {
+      "endpoint": "/test1/",
+      "auth_type": "BASIC_HTTP",
+      "token": "",
+      "credentials": {
+        "username": "rati",
+        "password": "123"
+      },
+      "script": "explorer"
     }
   ]
 }

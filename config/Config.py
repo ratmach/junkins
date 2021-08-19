@@ -37,7 +37,7 @@ class JunkinsConfig:
 
     def registerEndpoints(self, app):
         # TODO add security decorators
-        for script in self.scripts:
+        for count, script in enumerate(self.scripts):
             def security_decorator(f):
                 def wrapper(*args, **kwargs):
                     try:
@@ -61,8 +61,8 @@ class JunkinsConfig:
                     def wrapper(*args, **kwargs):
                         print(security_type)
                         if security_type == EndpointSecurityTypes.BASIC_HTTP.value:
-                            username = request.authorization.get('username', None)
-                            password = request.authorization.get('password', None)
+                            username = request.authorization.get('username', None) if request.authorization else None
+                            password = request.authorization.get('password', None) if request.authorization else None
                             if username != credentials.get("username", None) or password != credentials.get("password",
                                                                                                             None):
                                 return ('Unauthorized', 401, {
@@ -74,10 +74,11 @@ class JunkinsConfig:
 
                 return decorator
 
-            @app.route(script.endpoint)
             @security_decorator
             @basic_http_login_required(script.security_type, script.credentials)
             def resolver():
                 result = os.popen(script.script)
                 output = result.read()
                 return jsonify({"output": output})
+            resolver.__name__ = "resolver_{0}".format(count)
+            app.add_url_rule(script.endpoint, view_func=resolver)
