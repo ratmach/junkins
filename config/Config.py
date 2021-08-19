@@ -1,7 +1,10 @@
 import os
+from base64 import b64encode
 from enum import Enum
 
-from flask import jsonify
+from flask import jsonify, request, make_response, abort
+from werkzeug.exceptions import HTTPException
+from werkzeug.security import check_password_hash
 
 
 class EndpointSecurityTypes(Enum):
@@ -11,9 +14,10 @@ class EndpointSecurityTypes(Enum):
 
 
 class EndpointSecurityDecorators(Enum):
-    EndpointSecurityTypes.BASIC_HTTP = None
-    EndpointSecurityTypes.TOKEN = None
-    EndpointSecurityTypes.OTP = None
+    BASIC_HTTP = lambda username, password: check_password_hash(username, password)
+    TOKEN = lambda x: x == request.form.get("token", "") if "token" in request.form else lambda \
+            x: jsonify({"reason": "token not provided"}), 403
+    OTP = lambda x: jsonify({"reason": "not implemented yet"}), 502
 
 
 class ConfigEntry:
@@ -34,7 +38,45 @@ class JunkinsConfig:
     def registerEndpoints(self, app):
         # TODO add security decorators
         for script in self.scripts:
+            def security_decorator(f):
+                def wrapper(*args, **kwargs):
+                    try:
+                        if script.security_type == EndpointSecurityTypes.BASIC_HTTP.value:
+                            pass
+                        elif script.security_type == EndpointSecurityTypes.TOKEN.value:
+                            pass
+                        elif script.security_type == EndpointSecurityTypes.OTP.value:
+                            pass
+                        return f(*args, **kwargs)
+                    except HTTPException as e:
+                        raise
+                    except Exception as e:
+                        response = jsonify({"reason": str(e)})
+                        response.status_code = 400
+
+                return wrapper
+
+            def basic_http_login_required(security_type, credentials):
+                def decorator(f):
+                    def wrapper(*args, **kwargs):
+                        print(security_type)
+                        if security_type == EndpointSecurityTypes.BASIC_HTTP.value:
+                            username = request.authorization.get('username', None)
+                            password = request.authorization.get('password', None)
+                            if username != credentials.get("username", None) or password != credentials.get("password",
+                                                                                                            None):
+                                return ('Unauthorized', 401, {
+                                    'WWW-Authenticate': 'Basic realm="Login Required"'
+                                })
+                        return f(*args, **kwargs)
+
+                    return wrapper
+
+                return decorator
+
             @app.route(script.endpoint)
+            @security_decorator
+            @basic_http_login_required(script.security_type, script.credentials)
             def resolver():
                 result = os.popen(script.script)
                 output = result.read()

@@ -2,14 +2,14 @@
   "port": 8083,
   "scripts": [
     {
-      "endpoint": "/pull_frontend/",
+      "endpoint": "/test/",
       "auth_type": "BASIC_HTTP",
       "token": "",
       "credentials": {
         "username": "rati",
         "password": "123"
       },
-      "script": "pull_frontend.sh"
+      "script": "./scripts/test_script.sh"
     }
   ]
 }

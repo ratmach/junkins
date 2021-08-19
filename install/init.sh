@@ -1,20 +1,14 @@
 #!/bin/bash
 
-echo "Please specify the port (i.e 8083):"
-read port
-echo "Please specify the user (i.e user):"
-read user
-echo "Please specify the user_group (i.e www-data):"
-read user_group
-echo "Please specify the domain/IP (nginx server, i.e 0.0.0.0):"
-read ip
+read -p "Please specify the port (i.e 8083):" -e -i 8083 port
+read -p "Please specify the user (i.e user):" -e -i 'user' user
+read -p "Please specify the user_group (i.e www-data):" -e -i 'www-data' user_group
+read -p "Please specify the domain/IP (nginx server, i.e 0.0.0.0):" -e -i '0.0.0.0' ip
 
-echo "Please specify junkins folder"
-read junkins_root
+read -p "Please specify junkins folder" -e -i '/junkins' junkins_root
 
-echo "Install python? [y/n] y"
+read -p "Install python? [y/n] y" -e python_install
 
-read python_install
 if [[ "$python_install" == "n" || "$python_install" == "N" ]]; then
   echo ">>> Skipping python installation"
 else
@@ -26,18 +20,18 @@ else
 fi
 
 echo "Installing nginx"
-echo "Install nginx? [y/n] y"
-read nginx_install
+read -p "Install nginx? [y/n] y" -e nginx_install
 
 if [[ "$nginx_install" == "n" || "$nginx_install" == "N" ]]; then
   echo ">>> Skipping nginx installation"
 else
   echo ">>> Installing nginx"
   sudo apt-get install nginx
+  python3 scripts/get-pip.py
 fi
 
 echo "Setting up venv"
-pip install virtualenv
+python3 -m pip install virtualenv
 cd "$junkins_root"
 
 mkdir junkins_venv
@@ -45,9 +39,10 @@ virtualenv junkins_venv
 source junkins_venv/bin/activate
 
 echo "Installing Dependencies"
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 echo "Building configuration files"
+cd install
 python3 make_gunicorn_file.py "$user" "$user_group" "$junkins_junkins_root"
 python3 make_nginx_file.py "$port" "$ip" "$junkins_root"
 
