@@ -6,7 +6,7 @@ After=network.target
 User={user}
 Group={user_group}
 WorkingDirectory={working_directory}
-ExecStart={working_directory}/jenkins_venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:{working_directory}/junkins.sock junkins.wsgi:app
+ExecStart={working_directory}/jenkins_venv/bin/gunicorn --error-log junkins-error.log --access-logfile - --workers 1 --bind unix:{working_directory}/junkins.sock junkins.wsgi:app
 
 [Install]
 WantedBy=multi-user.target

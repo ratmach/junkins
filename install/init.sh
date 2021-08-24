@@ -43,16 +43,17 @@ python3 -m pip install -r requirements.txt
 
 echo "Building configuration files"
 cd install
-python3 make_gunicorn_file.py "$user" "$user_group" "$junkins_junkins_root"
+
+python3 make_gunicorn_file.py "$user" "$user_group" "$junkins_root"
 python3 make_nginx_file.py "$port" "$ip" "$junkins_root"
 
 echo "Copying configuration files"
-sudo cp gunicorn.service /etc/systemd/gunicorn.service
+sudo cp gunicorn.service /etc/systemd/system/junkins.service
 sudo cp nginx.service /etc/nginx/sites-available/junkins
 
-echo "Registering gunicorn service"
-sudo systemctl start gunicorn
-sudo systemctl enable gunicorn
+echo "Registering junkins service"
+sudo systemctl start junkins
+sudo systemctl enable junkins
 
 echo "Updating nginx configuration"
 sudo ln -s /etc/nginx/sites-available/junkins /etc/nginx/sites-enabled
