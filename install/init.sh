@@ -18,6 +18,7 @@ else
   sudo apt update
   sudo apt install python3.8
   sudo apt-get install python3-pip
+  sudo apt-get install python3-virtualenv
 fi
 
 echo "Installing nginx"
