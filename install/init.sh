@@ -17,6 +17,7 @@ else
   sudo add-apt-repository ppa:deadsnakes/ppa
   sudo apt update
   sudo apt install python3.8
+  sudo apt-get install python3-pip
 fi
 
 echo "Installing nginx"
@@ -27,7 +28,6 @@ if [[ "$nginx_install" == "n" || "$nginx_install" == "N" ]]; then
 else
   echo ">>> Installing nginx"
   sudo apt-get install nginx
-  python3 scripts/get-pip.py
 fi
 
 echo "Setting up venv"
